@@ -26,12 +26,15 @@ class App extends Component {
             data.append('file', this.state.selectedFile[x])
         }
      
-       axios.post("http://127.0.0.1:5000/api/upload", data, { 
+       axios.post("http://127.0.0.1:5000/api/upload", data, {
            // receive two    parameter endpoint url ,form data
        })
      
      .then(res => { // then print response status
-         console.log(res.statusText)
+         console.log(res.data);
+         //console.log(typeof res.data);
+         //document.getElementById('label').textContent = "Preview";
+         document.getElementById('jsonResult').value = JSON.stringify(res.data, undefined, 4);
       })
     //   .then(response => response.json())
     //   .then(data => console.log(data));
@@ -58,6 +61,10 @@ class App extends Component {
                         </div>
                         <button type="button" className="btn btn-success btn-block" onClick={this.onClickHandler}>Upload</button> 
                     </form>                    
+                </div>
+                </div>
+                <div className="row">
+                <div className="col-md-6"><textarea id="jsonResult"></textarea>
                 </div>
                 </div>
             </div>

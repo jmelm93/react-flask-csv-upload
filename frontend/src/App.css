@@ -43,3 +43,9 @@
   text-transform: capitalize;
   text-align: center;
 }
+
+#jsonResult {
+  min-width: -webkit-fill-available;
+  min-height: 200px;
+  margin-top: 20px;
+}

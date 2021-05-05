@@ -3,6 +3,8 @@ from flask_restful import Api, Resource, reqparse
 from flask_cors import CORS #comment this on deployment
 import os
 import pandas as pd
+import json
+import numpy as np
 
 app = Flask(__name__)
 CORS(app) #comment this on deployment
@@ -18,9 +20,13 @@ def upload_file():
         # check if the post request has the file part
         files = request.files.getlist("file")
         # Grab each file individually from the request
-        dataset1 = files[0]
-        df1 = pd.read_csv(dataset1)
-        result = df1
+        csv_list = []
+        for file in files:
+            csv_list.append(pd.read_csv(file))
+        
+        result = pd.concat(csv_list, axis=0, ignore_index=True)
+
+        result = result.replace({np.nan: None})
 
         ##### BELOW ENABLES USING ADDITIONAL UPLOADS ######
         ##### NEED TO WRITE LOOP TO SIMPLY RUN THIS FOR HOWEVER MANY ARE UPLOADED ######
@@ -42,7 +48,7 @@ def upload_file():
         # result.to_csv('result.csv')
         # print(json_result)
     
-        return json_result
+        return json.dumps(json_result)
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
