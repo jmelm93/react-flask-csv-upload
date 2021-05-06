@@ -20,10 +20,19 @@ class App extends Component {
         })
     }
 
+    onChangeCompetitorHandler=event=>{
+        this.setState({
+         selectedCompetitorFile: event.target.files,
+        })
+    }
+
     onClickHandler = () => {
         const data = new FormData()
         for(var x = 0; x<this.state.selectedFile.length; x++) {
             data.append('file', this.state.selectedFile[x])
+        }
+        for(var x = 0; x<this.state.selectedCompetitorFile.length; x++) {
+            data.append('competitor-file', this.state.selectedCompetitorFile[x])
         }
      
        axios.post("http://127.0.0.1:5000/api/upload", data, {
@@ -55,6 +64,19 @@ class App extends Component {
                                 // Show .xls, .xlsx, .csv files...
                                 accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                                 onChange={this.onChangeHandler} 
+                                className="form-control" 
+                                multiple
+                            />
+                        </div>
+
+                        <div className="form-group competitor-files">
+                            <label>Upload Competitor File </label>
+                            <input 
+                                type="file" 
+                                name="competitor-file" 
+                                // Show .xls, .xlsx, .csv files...
+                                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                onChange={this.onChangeCompetitorHandler} 
                                 className="form-control" 
                                 multiple
                             />

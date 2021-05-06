@@ -19,23 +19,25 @@ def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
         files = request.files.getlist("file")
-        # Grab each file individually from the request
+        competitor_files = request.files.getlist("competitor-file")
+        
         csv_list = []
+        csv_competitor_list = []
+
+        # Read and concatenate the files sent from the frontend
         for file in files:
             csv_list.append(pd.read_csv(file))
         
         result = pd.concat(csv_list, axis=0, ignore_index=True)
-
         result = result.replace({np.nan: None})
-
-        ##### BELOW ENABLES USING ADDITIONAL UPLOADS ######
-        ##### NEED TO WRITE LOOP TO SIMPLY RUN THIS FOR HOWEVER MANY ARE UPLOADED ######
-
-        # dataset2 = files[1]
-        # df2 = pd.read_csv(dataset2)
-        # frames = [df1, df2]
-        # result = pd.concat(frames)
         
+        for file in competitor_files:
+            csv_competitor_list.append(pd.read_csv(file))      
+
+        competitor_result = pd.concat(csv_competitor_list, axis=0, ignore_index=True)
+        competitor_result = competitor_result.replace({np.nan: None})
+        
+        # Prepare the result to return
         row_count = result.shape[0]
         column_count = result.shape[1]
         column_names = result.columns.tolist()
@@ -44,10 +46,11 @@ def upload_file():
             final_row_data.append(rows.to_dict())
         json_result = {'rows': row_count, 'cols': column_count, 'columns': column_names, 'rowData': final_row_data}
         
-        print(result.head(10))
+        # print(competitor_result.head(10))
         # result.to_csv('result.csv')
         # print(json_result)
-    
+
+        # we have to return a JSON object as string in order to be pretty-printed in the frontend
         return json.dumps(json_result)
 
 if __name__ == '__main__':
