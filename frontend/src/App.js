@@ -3,17 +3,7 @@ import React, { Component } from 'react';
 import './App.css'
 import axios from 'axios';
 
-import { CSVLink } from "react-csv";
 import CsvDownload from "react-json-to-csv";
-
-// <CSVLink
-// data={this.state.rowData}
-// filename="data.csv"
-// // className="hidden"
-// // ref={this.csvLink}
-// target="_blank">
-// Download 
-// </CSVLink>
 
 
 // https://programmingwithmosh.com/javascript/react-file-upload-proper-server-side-nodejs-easy/
@@ -24,11 +14,12 @@ class App extends Component {
           this.state = {
             selectedFile: null,
             selectedCompetitorFile: null,
-            headers: [],
-            data:[] 
+            data:[],
+            disabled: true
           }
        
       }
+    
 
     onChangeHandler=event=>{
         this.setState({
@@ -56,22 +47,17 @@ class App extends Component {
        })
 
 
-    .then(res => { // then print response status
-        this.setState({ headers: JSON.stringify(res.data.columns) })
-        this.setState({ data: JSON.stringify(res.data.rowData,["Keyword"]) })
-        // this.setState({ data: JSON.stringify(res.data.rowData,["Keyword"]) })
-        // this.setState({ result: JSON.stringify(res.data.rowData) })
+        .then(res => { // then print response status
+            this.setState({ data: res.data.rowData })
 
-        console.log(res.data.columns)
-        console.log(res.data.rowData)
-        console.log(JSON.stringify(res.data.rows))
-        console.log(JSON.stringify(res.data.rowData))
-        // console.log(res.data.rowData.Keyword)
-
-         //console.log(typeof res.data);
-         //document.getElementById('label').textContent = "Preview";
-        document.getElementById('jsonResult').value = JSON.stringify(res.data, undefined, 4);
-      })
+            // console.log(res.data.columns)
+            // console.log(res.data.rowData)
+            
+            // Add JSON Object below Download
+            document.getElementById('jsonResult').value = JSON.stringify(res.data.rowData, undefined, 4);
+        })
+      .catch(error => console.log(error))
+      .finally(() => this.setState({ disabled: false }))
      
      }
 
@@ -106,21 +92,24 @@ class App extends Component {
                                 multiple
                             />
                         </div>
-                        <button type="button" className="btn btn-success btn-block" onClick={this.onClickHandler}>Upload</button> 
-                    </form>                    
+                        <button 
+                            type="button" 
+                            id="button" 
+                            className="btn btn-success btn-block" 
+                            onClick={this.onClickHandler}
+                            disabled={!this.state.selectedFile || !this.state.selectedCompetitorFile}
+                        >
+                        UPLOAD
+                        </button> 
+                        </form>
+                        </div>
+                        </div>
+                <div className="row mt-2">
+                <div className="col-md-6">
+                <CsvDownload id="download_button" disabled={this.state.disabled} className="btn btn-primary btn-block" data={this.state.data}>KW GAP - CSV DOWNLOAD</CsvDownload>
+                
                 </div>
                 </div>
-                <CsvDownload data={this.state.data}>Json to CSV</CsvDownload>
-
-                <CSVLink
-                    // headers={this.state.headers}
-                    data={this.state.data}
-                    filename="data.csv"
-                    // className="hidden"
-                    // ref={this.csvLink}
-                    target="_blank">
-                Download 
-                </CSVLink>
                 <div className="row">
                 <div className="col-md-6"><textarea id="jsonResult"></textarea>
                 </div>
