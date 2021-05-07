@@ -92,27 +92,36 @@ class App extends Component {
                                 multiple
                             />
                         </div>
-                        <button 
-                            type="button" 
-                            id="button" 
-                            className="btn btn-success btn-block" 
-                            onClick={this.onClickHandler}
-                            disabled={!this.state.selectedFile || !this.state.selectedCompetitorFile}
-                        >
-                        UPLOAD
-                        </button> 
-                        </form>
-                        </div>
-                        </div>
-                <div className="row mt-2">
-                <div className="col-md-6">
-                <CsvDownload id="download_button" disabled={this.state.disabled} className="btn btn-primary btn-block" data={this.state.data}>KW GAP - CSV DOWNLOAD</CsvDownload>
-                
+                    </form>
                 </div>
+            </div>
+                <div className="row mt-2">
+                    <div className="col-md-6">
+                    <button 
+                        type="button" 
+                        id="button" 
+                        className="btn btn-success btn-block" 
+                        onClick={this.onClickHandler}
+                        disabled={!this.state.selectedFile || !this.state.selectedCompetitorFile}
+                    >
+                    UPLOAD
+                    </button> 
+                </div>
+            </div>    
+                <div className="row mt-2">
+                    <div className="col-md-6">
+                        <CsvDownload 
+                            id="download_button" 
+                            disabled={this.state.disabled} 
+                            className="btn btn-primary btn-block" 
+                            data={this.state.data}
+                            >
+                            KW GAP - CSV DOWNLOAD
+                        </CsvDownload>
+                    </div>
                 </div>
                 <div className="row">
-                <div className="col-md-6"><textarea id="jsonResult"></textarea>
-                </div>
+                    <div className="col-md-6"><textarea id="jsonResult"></textarea></div>
                 </div>
             </div>
         )
