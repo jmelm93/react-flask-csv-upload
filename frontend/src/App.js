@@ -3,13 +3,29 @@ import React, { Component } from 'react';
 import './App.css'
 import axios from 'axios';
 
+import { CSVLink } from "react-csv";
+import CsvDownload from "react-json-to-csv";
+
+// <CSVLink
+// data={this.state.rowData}
+// filename="data.csv"
+// // className="hidden"
+// // ref={this.csvLink}
+// target="_blank">
+// Download 
+// </CSVLink>
+
+
 // https://programmingwithmosh.com/javascript/react-file-upload-proper-server-side-nodejs-easy/
 
 class App extends Component {
     constructor(props) {
         super(props);
           this.state = {
-            selectedFile: null
+            selectedFile: null,
+            selectedCompetitorFile: null,
+            headers: [],
+            data:[] 
           }
        
       }
@@ -38,15 +54,24 @@ class App extends Component {
        axios.post("http://127.0.0.1:5000/api/upload", data, {
            // receive two    parameter endpoint url ,form data
        })
-     
-     .then(res => { // then print response status
-         console.log(res.data);
+
+
+    .then(res => { // then print response status
+        this.setState({ headers: JSON.stringify(res.data.columns) })
+        this.setState({ data: JSON.stringify(res.data.rowData,["Keyword"]) })
+        // this.setState({ data: JSON.stringify(res.data.rowData,["Keyword"]) })
+        // this.setState({ result: JSON.stringify(res.data.rowData) })
+
+        console.log(res.data.columns)
+        console.log(res.data.rowData)
+        console.log(JSON.stringify(res.data.rows))
+        console.log(JSON.stringify(res.data.rowData))
+        // console.log(res.data.rowData.Keyword)
+
          //console.log(typeof res.data);
          //document.getElementById('label').textContent = "Preview";
-         document.getElementById('jsonResult').value = JSON.stringify(res.data, undefined, 4);
+        document.getElementById('jsonResult').value = JSON.stringify(res.data, undefined, 4);
       })
-    //   .then(response => response.json())
-    //   .then(data => console.log(data));
      
      }
 
@@ -85,6 +110,17 @@ class App extends Component {
                     </form>                    
                 </div>
                 </div>
+                <CsvDownload data={this.state.data}>Json to CSV</CsvDownload>
+
+                <CSVLink
+                    // headers={this.state.headers}
+                    data={this.state.data}
+                    filename="data.csv"
+                    // className="hidden"
+                    // ref={this.csvLink}
+                    target="_blank">
+                Download 
+                </CSVLink>
                 <div className="row">
                 <div className="col-md-6"><textarea id="jsonResult"></textarea>
                 </div>
